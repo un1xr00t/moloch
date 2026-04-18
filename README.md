@@ -1,6 +1,7 @@
 # OBSIDIAN // Unrestricted Local AI Interface
 
-<img width="789" height="583" alt="image" src="https://github.com/user-attachments/assets/90995878-ffaf-4d42-be0f-d4f6e7c253f8" />
+<img width="1486" height="1022" alt="image" src="https://github.com/user-attachments/assets/04c37e36-3a53-4c10-8868-b2d1e1a6903b" />
+
 
 > A single-file, self-hosted AI interface that connects to [Ollama](https://ollama.com) for fully local, private, unrestricted AI. No cloud. No API keys. No filters. Your hardware, your models, your data.
 
