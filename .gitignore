@@ -1,0 +1,7 @@
+*.db
+*.log
+*.err
+__pycache__/
+*.pyc
+.env
+moloch/
