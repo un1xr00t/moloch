@@ -2,7 +2,6 @@
 
 <img width="789" height="583" alt="image" src="https://github.com/user-attachments/assets/90995878-ffaf-4d42-be0f-d4f6e7c253f8" />
 
-
 A single-file, self-hosted AI interface that connects to [Ollama](https://ollama.com) for fully local, private, unrestricted AI. No cloud. No API keys. No filters. Your hardware, your models, your data.
 
 ---
