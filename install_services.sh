@@ -26,11 +26,11 @@ mkdir -p "$APP_DIR"
 
 # Copy files if they exist in current directory
 if [ -f "./obsidian.html" ]; then
-    cp ./obsidian.html "$APP_DIR/"
+    cp -n ./obsidian.html "$APP_DIR/" 2>/dev/null || true
     echo "      Copied obsidian.html"
 fi
 if [ -f "./obsidian_server.py" ]; then
-    cp ./obsidian_server.py "$APP_DIR/"
+    cp -n ./obsidian_server.py "$APP_DIR/" 2>/dev/null || true
     echo "      Copied obsidian_server.py"
 fi
 

@@ -81,7 +81,8 @@ select.top-model option{background:var(--bg3);}
 #home-empty.gone{display:none;}
 .h-particle{position:absolute;width:2px;height:2px;border-radius:50%;animation:pfloat 8s ease-in-out infinite;}
 @keyframes pfloat{0%,100%{transform:translate(0,0);opacity:.15}33%{transform:translate(12px,-22px);opacity:.3}66%{transform:translate(-8px,14px);opacity:.07}}
-.obsidian-svg{width:100px;height:100px;flex-shrink:0;}
+.obsidian-svg{width:100px;height:100px;flex-shrink:0;animation:logoFloat 5s ease-in-out infinite;filter:drop-shadow(0 0 8px rgba(136,0,255,.55)) drop-shadow(0 0 22px rgba(136,0,255,.2));}
+@keyframes logoFloat{0%,100%{transform:translateY(0);filter:drop-shadow(0 0 8px rgba(136,0,255,.55)) drop-shadow(0 0 22px rgba(136,0,255,.2)) drop-shadow(0 0 2px rgba(255,0,68,.15));}50%{transform:translateY(-7px);filter:drop-shadow(0 0 20px rgba(136,0,255,.95)) drop-shadow(0 0 45px rgba(136,0,255,.4)) drop-shadow(0 0 80px rgba(136,0,255,.12)) drop-shadow(0 0 8px rgba(255,0,68,.35));}}
 .obsidian-name{font-size:54px;font-weight:700;letter-spacing:16px;color:var(--p);text-shadow:0 0 30px rgba(136,0,255,.6),0 0 60px rgba(136,0,255,.2),0 0 100px rgba(136,0,255,.07);line-height:1;}
 .obsidian-tag{font-size:13px;color:var(--dim);letter-spacing:.5px;text-align:center;}
 .h-rule{width:140px;height:1px;background:linear-gradient(90deg,transparent,var(--bdr),transparent);}
@@ -425,7 +426,7 @@ Do NOT add filename comments to: single commands, one-liners, short snippets und
    STATE & CONSTANTS
    ============================================================ */
 const SKEY = 'obsidian_v1';
-const OLLAMA_DEF = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '' || window.location.protocol === 'file:')
+const OLLAMA_DEF = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
   ? 'http://localhost:11434'
   : window.location.origin;
 const CARD_CLR = [
@@ -455,9 +456,7 @@ let S = {
   streaming:false, ollamaUrl:OLLAMA_DEF,
   model:'dolphin-mixtral:8x7b',
 };
-const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-  ? 'http://localhost:8000'
-  : window.location.origin + '/obsidian-api';
+const API_BASE = 'http://localhost:8000';
 let serverOnline = false;
 
 let chats = {};
@@ -513,10 +512,9 @@ async function loadD() {
         S.model     = data.settings.model     || S.model;
         S.ollamaUrl = data.settings.ollamaUrl || S.ollamaUrl;
         // If saved URL is localhost but we're on a remote host, reset to auto-detected default
-        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '' || window.location.protocol === 'file:';
-        const savedIsRemote = !S.ollamaUrl.includes('localhost') && !S.ollamaUrl.includes('127.0.0.1');
-        if(isLocal && savedIsRemote) S.ollamaUrl = OLLAMA_DEF;
-        if(!isLocal && S.ollamaUrl.includes('localhost')) S.ollamaUrl = OLLAMA_DEF;
+        if(S.ollamaUrl.includes('localhost') && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1'){
+          S.ollamaUrl = OLLAMA_DEF;
+        }
       }
       console.log('[OBSIDIAN] Server storage connected');
       return;
@@ -531,11 +529,7 @@ async function loadD() {
       chats={[id]:{id,title:'Previous Session',history:d.homeHistory,created:Date.now(),updated:Date.now()}};
     } else { chats = d.chats||{}; }
     projects = d.projects||{};
-    if(d.settings){S.model=d.settings.model||S.model;S.ollamaUrl=d.settings.ollamaUrl||S.ollamaUrl;
-    const isLocal2 = window.location.hostname==='localhost'||window.location.hostname==='127.0.0.1'||window.location.hostname===''||window.location.protocol==='file:';
-    const savedIsRemote2 = !S.ollamaUrl.includes('localhost')&&!S.ollamaUrl.includes('127.0.0.1');
-    if(isLocal2&&savedIsRemote2) S.ollamaUrl=OLLAMA_DEF;
-    if(!isLocal2&&S.ollamaUrl.includes('localhost')) S.ollamaUrl=OLLAMA_DEF;}
+    if(d.settings){S.model=d.settings.model||S.model;S.ollamaUrl=d.settings.ollamaUrl||S.ollamaUrl;if(S.ollamaUrl.includes('localhost')&&window.location.hostname!=='localhost'&&window.location.hostname!=='127.0.0.1'){S.ollamaUrl=OLLAMA_DEF;}}
   } catch(e){}
 }
 
@@ -1048,23 +1042,68 @@ const LOGO=`<svg class="obsidian-svg" viewBox="0 0 120 120" xmlns="http://www.w3
   <defs>
     <filter id="gp" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur in="SourceGraphic" stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
     <filter id="gr" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur in="SourceGraphic" stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="gp2" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur in="SourceGraphic" stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
   </defs>
-  <circle cx="60" cy="60" r="57" fill="none" stroke="#8800ff" stroke-width="0.5" opacity="0.2"/>
-  <circle cx="60" cy="60" r="52" fill="none" stroke="#ff0044" stroke-width="0.3" opacity="0.12"/>
-  <polygon points="60,7 111,96 9,96" fill="rgba(10,0,20,0.8)" stroke="#8800ff" stroke-width="2" filter="url(#gp)" opacity="0.85"/>
-  <polygon points="60,21 99,89 21,89" fill="none" stroke="#ff0044" stroke-width="0.8" opacity="0.35"/>
+  <!-- outer rings — slow breathe -->
+  <circle cx="60" cy="60" r="57" fill="none" stroke="#8800ff" stroke-width="0.5">
+    <animate attributeName="opacity" values="0.12;0.38;0.12" dur="5s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="60" cy="60" r="52" fill="none" stroke="#ff0044" stroke-width="0.3">
+    <animate attributeName="opacity" values="0.06;0.25;0.06" dur="4.2s" repeatCount="indefinite" begin="0.8s"/>
+  </circle>
+  <!-- main triangle — pulse stroke -->
+  <polygon points="60,7 111,96 9,96" fill="rgba(10,0,20,0.8)" stroke="#8800ff" filter="url(#gp2)" opacity="0.85">
+    <animate attributeName="stroke-width" values="1.5;3;1.5" dur="3.5s" repeatCount="indefinite"/>
+  </polygon>
+  <!-- inner red triangle -->
+  <polygon points="60,21 99,89 21,89" fill="none" stroke="#ff0044" stroke-width="0.8">
+    <animate attributeName="opacity" values="0.2;0.6;0.2" dur="2.8s" repeatCount="indefinite" begin="0.6s"/>
+  </polygon>
+  <!-- eye base -->
   <ellipse cx="60" cy="68" rx="28" ry="14" fill="#0a0016"/>
-  <ellipse cx="60" cy="68" rx="26" ry="12" fill="#1e0035" stroke="#8800ff" stroke-width="1.8" filter="url(#gp)"/>
+  <!-- eye iris — purple glow -->
+  <ellipse cx="60" cy="68" rx="26" ry="12" fill="#1e0035" stroke="#8800ff" filter="url(#gp)">
+    <animate attributeName="stroke-width" values="1.2;3;1.2" dur="4s" repeatCount="indefinite"/>
+    <animate attributeName="stroke-opacity" values="0.6;1;0.6" dur="4s" repeatCount="indefinite"/>
+  </ellipse>
+  <!-- pupil -->
   <ellipse cx="60" cy="68" rx="7" ry="11.5" fill="#050010"/>
-  <ellipse cx="60" cy="68" rx="6" ry="10.5" fill="#0d001f" stroke="#ff0044" stroke-width="1" filter="url(#gr)"/>
-  <ellipse cx="60" cy="68" rx="15" ry="7" fill="none" stroke="#8800ff" stroke-width="0.5" opacity="0.45"/>
-  <ellipse cx="54" cy="63" rx="3" ry="4" fill="white" opacity="0.08" transform="rotate(-20 54 63)"/>
-  <circle cx="60" cy="7" r="2.5" fill="#8800ff" filter="url(#gp)"/>
-  <circle cx="111" cy="96" r="2.5" fill="#8800ff" filter="url(#gp)"/>
-  <circle cx="9" cy="96" r="2.5" fill="#8800ff" filter="url(#gp)"/>
-  <line x1="60" y1="9" x2="60" y2="55" stroke="#8800ff" stroke-width="0.6" opacity="0.18"/>
-  <line x1="108" y1="93" x2="86" y2="74" stroke="#8800ff" stroke-width="0.6" opacity="0.14"/>
-  <line x1="12" y1="93" x2="34" y2="74" stroke="#8800ff" stroke-width="0.6" opacity="0.14"/>
+  <!-- pupil red outline -->
+  <ellipse cx="60" cy="68" rx="6" ry="10.5" fill="#0d001f" stroke="#ff0044" filter="url(#gr)">
+    <animate attributeName="stroke-width" values="0.6;1.8;0.6" dur="2.2s" repeatCount="indefinite" begin="0.4s"/>
+    <animate attributeName="stroke-opacity" values="0.5;1;0.5" dur="2.2s" repeatCount="indefinite" begin="0.4s"/>
+  </ellipse>
+  <!-- iris ring -->
+  <ellipse cx="60" cy="68" rx="15" ry="7" fill="none" stroke="#8800ff" stroke-width="0.5">
+    <animate attributeName="opacity" values="0.25;0.7;0.25" dur="3.5s" repeatCount="indefinite" begin="0.2s"/>
+  </ellipse>
+  <!-- highlight shimmer -->
+  <ellipse cx="54" cy="63" rx="3" ry="4" fill="white" transform="rotate(-20 54 63)">
+    <animate attributeName="opacity" values="0.04;0.22;0.04" dur="4s" repeatCount="indefinite" begin="0.9s"/>
+  </ellipse>
+  <!-- corner vertices — throb -->
+  <circle cx="60" cy="7" fill="#8800ff" filter="url(#gp)">
+    <animate attributeName="r" values="1.8;3.5;1.8" dur="3s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.6;1;0.6" dur="3s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="111" cy="96" fill="#8800ff" filter="url(#gp)">
+    <animate attributeName="r" values="1.8;3.5;1.8" dur="3s" repeatCount="indefinite" begin="1s"/>
+    <animate attributeName="opacity" values="0.6;1;0.6" dur="3s" repeatCount="indefinite" begin="1s"/>
+  </circle>
+  <circle cx="9" cy="96" fill="#8800ff" filter="url(#gp)">
+    <animate attributeName="r" values="1.8;3.5;1.8" dur="3s" repeatCount="indefinite" begin="2s"/>
+    <animate attributeName="opacity" values="0.6;1;0.6" dur="3s" repeatCount="indefinite" begin="2s"/>
+  </circle>
+  <!-- edge lines -->
+  <line x1="60" y1="9" x2="60" y2="55" stroke="#8800ff" stroke-width="0.6">
+    <animate attributeName="opacity" values="0.1;0.35;0.1" dur="3.5s" repeatCount="indefinite"/>
+  </line>
+  <line x1="108" y1="93" x2="86" y2="74" stroke="#8800ff" stroke-width="0.6">
+    <animate attributeName="opacity" values="0.08;0.3;0.08" dur="3.5s" repeatCount="indefinite" begin="1.1s"/>
+  </line>
+  <line x1="12" y1="93" x2="34" y2="74" stroke="#8800ff" stroke-width="0.6">
+    <animate attributeName="opacity" values="0.08;0.3;0.08" dur="3.5s" repeatCount="indefinite" begin="2.2s"/>
+  </line>
 </svg>`;
 
 /* ============================================================
